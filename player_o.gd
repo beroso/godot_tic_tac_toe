@@ -9,14 +9,10 @@ export var color := Color.aqua
 var end_angle := 0.0
 
 func _process(delta) -> void:
-	if end_angle > TAU:
-		if Engine.editor_hint:
-			end_angle = 0.0
-		else:
-			set_process(false)
-		return
 	end_angle += (delta * draw_velocity)
 	update()
+	if end_angle >= TAU:
+		finish_animation()
 
 
 func _draw() -> void:
@@ -24,3 +20,10 @@ func _draw() -> void:
 	var point_count := 60
 	var antialiased := true
 	draw_arc(Vector2.ZERO, radius + width, start_angle, end_angle, point_count, color, width, antialiased)
+
+
+func finish_animation() -> void:
+	if Engine.editor_hint:
+		end_angle = 0.0
+	else:
+		set_process(false)

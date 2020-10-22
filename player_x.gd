@@ -7,27 +7,28 @@ export var length := 32.0
 export var color := Color.greenyellow
 
 var t := 0.0
-var main_diagonal_pos : Vector2
-var other_diagonal_pos : Vector2
 
 func _process(delta) -> void:
 	t += delta * draw_velocity
-	main_diagonal_pos = top_left().linear_interpolate(bottom_right(), t)
-	other_diagonal_pos = top_right().linear_interpolate(bottom_left(), t)
-	
-	if top_left().distance_squared_to(main_diagonal_pos) >= top_left().distance_squared_to(bottom_right()):
-		if Engine.editor_hint:
-			t = 0
-		else:
-			set_process(false)
-
 	update()
+	if t >= 1.0:
+		finish_animation()
 
 
 func _draw() -> void:
 	var antialiased := true
+	var main_diagonal_pos := top_left().linear_interpolate(bottom_right(), t)
+	var anti_diagonal_pos := top_right().linear_interpolate(bottom_left(), t)
+
 	draw_line(top_left(), main_diagonal_pos, color, width, antialiased)
-	draw_line(top_right(), other_diagonal_pos, color, width, antialiased)
+	draw_line(top_right(), anti_diagonal_pos, color, width, antialiased)
+
+
+func finish_animation() -> void:
+	if Engine.editor_hint:
+		t = 0.0
+	else:
+		set_process(false)
 
 
 func bottom_left() -> Vector2:
